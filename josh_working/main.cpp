@@ -1,15 +1,8 @@
 #include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <algorithm>
 
 #include "otherfuncs.h"
 
 using namespace std;
-
-void removeDelim(string &str, char delim);
-void getCostTable(int cost[5][5]);
 
 int main() {
     int cost[5][5];
@@ -55,28 +48,4 @@ int main() {
     cout << b2 << endl;
 
     return 0;
-}
-
-void removeDelim(string &str, char delim) {
-    str.erase(remove(str.begin(), str.end(), delim), str.end());
-}
-
-void getCostTable(int cost[5][5]) {
-    ifstream costfile;
-    costfile.open("imp2cost.txt");
-
-    if(!costfile.is_open()) {
-        cout << "File imp2cost.txt does not exist" << endl;
-    }
-
-    string line;
-    int line_count = 0;
-    char delim = ',';
-    while(getline(costfile, line)) {
-        if(line_count >= 1 && line_count <=5) {
-            removeDelim(line, delim);
-            cout << line << endl;
-        }
-        line_count++;
-    }
 }

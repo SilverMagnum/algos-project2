@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <fstream>
 
 using namespace std;
 
@@ -20,5 +22,9 @@ int align(const string &a, const string &b, int alpha_gap,
 void printVector(const vector<vector<int> > &A);
 
 int min(int a, int b, int c);
+
+void removeDelim(string &str, char delim);
+
+void getCostTable(int cost[5][5]);
 
 #endif // OTHERFUNCS_H
