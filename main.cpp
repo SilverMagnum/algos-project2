@@ -23,21 +23,21 @@ int main() {
     };
 
     // The input strings that need to be aligned
-    string a1 = "CGCAATTCTGAAGCGCTGGGGAAGACGGGT";
-    string b1 = "TATCCCATCGAACGCCTATTCTAGGAT";
+    string a1 = "AACAGTTACC";
+    string b1 = "TAAGGTCA";
 
-    // Penalty for any alphabet matched with a gap
+    // Penalty for any matrix_size matched with a gap
     int gap_penalty = 1;
 
     /*
-     * alpha[i][j] = penalty for matching the ith alphabet with the
-     *               jth alphabet.
-     * Here: Penalty for matching an alphabet with anoter one is 2
-     *       Penalty for matching an alphabet with itself is 0
+     * alpha[i][j] = penalty for matching the ith matrix_size with the
+     *               jth matrix_size.
+     * Here: Penalty for matching an char with anoter one is 2
+     *       Penalty for matching an char with itself is 0
      */
-    int alpha[alphabets][alphabets];
-    for (int i = 0; i < alphabets; ++i) {
-        for (int j = 0; j < alphabets; ++j) {
+    int alpha[matrix_size][matrix_size];
+    for (int i = 0; i < matrix_size; ++i) {
+        for (int j = 0; j < matrix_size; ++j) {
             if (i == j) {
                 alpha[i][j] = 0;
             }
@@ -49,7 +49,7 @@ int main() {
 
     // Aligned sequences
     string a2, b2;
-    int penalty = align(a1, b1, gap_penalty, alpha, a2, b2);
+    int penalty = align(a1, b1, gap_penalty, alpha, a2, b2, arr);
 
     cout << "Initial Sequence a: " << a1 << endl;
     cout << "Initial Sequence b: " << b1 << endl;
