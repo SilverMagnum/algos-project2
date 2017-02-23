@@ -4,19 +4,21 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
-const int matrix_size = 5;
+const size_t alphabets = 26;
 
-int align(const string &a, const string &b, int alpha_gap, int alpha[matrix_size][matrix_size], string &a_aligned, string &b_aligned,
-          int weights[matrix_size][matrix_size]);
+/*
+ * Returns the Needleman-Wunsch score for the best alignment of a and b
+ * and stores the aligned sequences in a_aligned and b_aligned
+ */
+int align(const string &a, const string &b, int alpha_gap,
+        int alpha[alphabets][alphabets], string &a_aligned,
+        string &b_aligned);
 
-void printVector(const vector<vector<int> > &A);
+void print2DVector(const vector<vector<int> > &A);
 
 int min(int a, int b, int c);
-
-int gapWeight(int weights[matrix_size][matrix_size], char c1, char c2);
 
 #endif // OTHERFUNCS_H
