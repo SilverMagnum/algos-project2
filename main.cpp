@@ -60,7 +60,7 @@ int main() {
         b2 = intArrayToString(pairTwo);
 
         reverse(a2.begin(), a2.end());
-        reverse(b2.begin(), a2.end());
+        reverse(b2.begin(), b2.end());
 
         outdna << a2 << ',' << b2 << ':' << weight << endl;
     }
