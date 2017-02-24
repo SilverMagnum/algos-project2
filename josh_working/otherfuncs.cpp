@@ -1,62 +1,111 @@
 #include "otherfuncs.h"
 
-int align(const string &a, const string &b, int alpha_gap,
-        int alpha[alphabets][alphabets], string &a_aligned,
-        string &b_aligned) {
-    size_t n = a.size();
-    size_t m = b.size();
+int* stringToIntArray(string dna) {
+    int stringSize = dna.size();
+    int* digitDNA;
 
-    vector<vector<int> > A(n + 1, vector<int>(m + 1));
+    digitDNA = new int[stringSize];
 
-    for (size_t i = 0; i <= m; ++i) {
-        A[0][i] = alpha_gap * i;
-    }
-    for (size_t i = 0; i <= n; ++i) {
-        A[i][0] = alpha_gap * i;
-    }
-    for (size_t i = 1; i <= n; ++i) {
-        for (size_t j = 1; j <= m; ++j) {
-            A[i][j] = min(A[i-1][j-1] + alpha[a[i-1] - 'A'][b[j-1] - 'A'],
-                          A[i-1][j] + alpha_gap,
-                          A[i][j-1] + alpha_gap);
+    for(int i = 0; i < stringSize; ++i) {
+        if(dna[i] == 'A') {
+            digitDNA[i] = 1;
+        }
+
+        else if(dna[i] == 'T') {
+            digitDNA[i] = 2;
+        }
+
+        else if(dna[i] == 'G') {
+            digitDNA[i] = 3;
+        }
+
+        else if(dna[i] == 'C') {
+            digitDNA[i] = 4;
         }
     }
 
-    //printVector(A);
+    return digitDNA;
+}
 
-    a_aligned = "";
-    b_aligned = "";
-    size_t j = m;
-    size_t i = n;
+string intArrayToString(int* digitDNA) {
+    string dna;
+    for(int i = 0; digitDNA[i] != 9; i++) {
+        if(digitDNA[i] == 0) {
+            dna = dna + '-';
+        }
+        else if(digitDNA[i] == 1) {
+            dna = dna + 'A';
+        }
+        else if(digitDNA[i] == 2) {
+            dna = dna + 'T';
+        }
+        else if(digitDNA[i] == 3) {
+            dna = dna + 'G';
+        }
+        else if(digitDNA[i] == 4) {
+            dna = dna + 'C';
+        }
+    }
+
+    return dna;
+}
+
+int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int alpha[5][5], int* outputOne, int* outputTwo) {
+    int n = inputOneSize;
+    int m = inputTwoSize;
+
+    vector<vector<int> > contour(n + 1, vector<int>(m + 1));
+
+    for (int i = 0; i <= m; i++) {
+        contour[0][i] = 3 * i;
+    }
+
+    for (int i = 0; i <= n; i++) {
+        contour[i][0] = 3 * i;
+    }
+
+    for(int i = 1; i <= n; i++) {
+        for(int j = 1; j <= m; j++) {
+            contour[i][j] = min(contour[i-1][j-1] + alpha[inputOne[i-1]][inputTwo[j-1]],
+                    contour[i-1][j] + alpha[inputOne[i-1]][0],
+                    contour[i][j-1] + alpha[0][inputTwo[j-1]]);
+        }
+    }
+
+    int j = m;
+    int i = n;
+    int x = 0;
+    int y = 0;
     for (; i >= 1 && j >= 1; --i) {
-        if (A[i][j] == A[i-1][j-1] + alpha[a[i-1] - 'A'][b[j-1] - 'A']) {
-            a_aligned = a[i-1] + a_aligned;
-            b_aligned = b[j-1] + b_aligned;
-            --j;
+        if (contour[i-1][j-1] + alpha[inputOne[i-1]][inputTwo[j-1]])  {
+            outputOne[x] = inputOne[i-1];
+            outputTwo[y] = inputTwo[j-1];
+            --j; x++; y++;
         }
-        else if (A[i][j] == A[i-1][j] + alpha_gap) {
-            a_aligned = a[i-1] + a_aligned;
-            b_aligned = '-' + b_aligned;
+        else if (contour[i-1][j] + alpha[0][inputTwo[j-1]]) {
+            outputOne[x] = inputOne[i-1];
+            outputTwo[y] = 0;
+            x++; y++;
         }
         else {
-            a_aligned = '-' + a_aligned;
-            b_aligned = b[j-1] + b_aligned;
+            outputOne[x] = 0;
+            outputTwo[y] = inputTwo[j-1];
             --j;
         }
     }
 
     while (i >= 1 && j < 1) {
-        a_aligned = a[i-1] + a_aligned;
-        b_aligned = '-' + b_aligned;
-        --i;
+        outputOne[x] = inputOne[i-1];
+        outputTwo[y] = 0;
+        --i; x++; y++;
     }
     while (j >= 1 && i < 1) {
-        a_aligned = '-' + a_aligned;
-        b_aligned = b[j-1] + b_aligned;
-        --j;
+        outputOne[x] = 0;
+        outputTwo[y] = inputTwo[j-1];
+        --j; x++; y++;
     }
 
-    return A[n][m];
+    return contour[n][m];
 }
 
 int min(int a, int b, int c) {

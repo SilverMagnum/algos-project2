@@ -34,22 +34,32 @@ int main() {
 
     string line;
     while(getline(indna, line)) {
+        //Initialize variables
         string a1 = line.substr(0, line.find(','));
         string b1 = line.substr(line.find(',') + 1, line.length());
-
-        int gap_penalty = 1;
-
-        int alpha[alphabets][alphabets] = {{0}};
-        for (size_t i = 0; i < alphabets; ++i) {
-            for (size_t j = 0; j < alphabets; ++j) {
-                if (i == j) alpha[i][j] = 0;
-                else alpha[i][j] = 2;
-            }
-        }
         string a2, b2;
-        int penalty = align(a1, b1, gap_penalty, alpha, a2, b2);
+        int *dnaOne, *dnaTwo;
+        int *pairOne, *pairTwo;
+        int pairSize = (a1.size() + b1.size());
+        int weight;
 
-        outdna << a2 << ',' << b2 << ':' << penalty << endl;
+        pairOne = new int[pairSize];
+        pairTwo = new int[pairSize];
+
+        for(int i = 0; i < pairSize; i++) {
+            pairOne[i] = 9;
+            pairTwo[i] = 9;
+        }
+
+        dnaOne = stringToIntArray(a1);
+        dnaTwo = stringToIntArray(b1);
+
+        weight = align(dnaOne, dnaTwo, a1.size(), b1.size(), cost, pairOne, pairTwo);
+
+        a2 = intArrayToString(pairOne);
+        b2 = intArrayToString(pairTwo);
+
+        outdna << a2 << ',' << b2 << ':' << weight << endl;
     }
     cout << "The \"imp2output.txt\" file has been created in the current directory." << endl;
     indna.close();
