@@ -59,6 +59,9 @@ int main() {
         a2 = intArrayToString(pairOne);
         b2 = intArrayToString(pairTwo);
 
+        reverse(a2.begin(), a2.end());
+        reverse(b2.begin(), a2.end());
+
         outdna << a2 << ',' << b2 << ':' << weight << endl;
     }
     cout << "The \"imp2output.txt\" file has been created in the current directory." << endl;
