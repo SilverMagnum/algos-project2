@@ -56,12 +56,15 @@ int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int 
 
     vector<vector<int> > contour(n + 1, vector<int>(m + 1));
 
-    for (int i = 0; i <= m; i++) {
-        contour[0][i] = 3 * i;
+    contour[0][0] = 0;
+
+    for (int i = 1; i <= m; i++) {
+        //contour[0][i] = 3 * i;
+        contour[0][i] = contour[0][i-1] + alpha[0][inputTwo[i-1]];
     }
 
-    for (int i = 0; i <= n; i++) {
-        contour[i][0] = 3 * i;
+    for (int i = 1; i <= n; i++) {
+        contour[i][0] = contour[i-1][0] + alpha[inputOne[i-1]][0];
     }
 
     for(int i = 1; i <= n; i++) {
@@ -111,8 +114,8 @@ int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int 
         --j; x++; y++;
     }
 
-    //return contour[n][m];
-    return weightRecalc;
+    return contour[n][m];
+    //return weightRecalc;
 }
 
 int min(int a, int b, int c) {
