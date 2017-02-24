@@ -1,11 +1,23 @@
 #include <iostream>
+#include <functional>
+#include <random>
 
 #include "otherfuncs.h"
 
 using namespace std;
 
+typedef vector<char> char_array;
+
+char_array charset() {
+    return char_array(
+    {'A', 'T', 'G', 'C'
+    });
+}
+
+string returnDNA();
+
 int main() {
-    int cost[5][5];
+    int cost[5][5] = {{0}};
     getCostTable(cost);
 
     // The input strings that need to be aligned
@@ -14,13 +26,6 @@ int main() {
 
     // Penalty for any alphabet matched with a gap
     int gap_penalty = 1;
-
-//    int alpha[4][4] = {
-//            {0, 1, 5, 1},
-//            {1, 0, 9, 1},
-//            {5, 9, 0, 1},
-//            {1, 1, 1, 0}
-//        };
 
     /*
      * alpha[i][j] = penalty for matching the ith alphabet with the
@@ -42,10 +47,31 @@ int main() {
 
     cout << "a: " << a1 << endl;
     cout << "b: " << b1 << endl;
-    cout << "Needleman-Wunsch Score: " << penalty << endl;
+    cout << "Alignment Cost: " << penalty << endl;
     cout << "Aligned sequences: " << endl;
     cout << a2 << endl;
     cout << b2 << endl;
 
     return 0;
+}
+
+string random_dna(size_t length, function<char(void)> rand_char) {
+    string str(length,0);
+    generate_n( str.begin(), length, rand_char );
+    return str;
+}
+
+string returnDNA() {
+    const auto ch_set = charset();
+
+    default_random_engine rng(random_device{}());
+
+    uniform_int_distribution<> dist(0, ch_set.size()-1);
+
+    auto randchar = [ ch_set,&dist,&rng ](){return ch_set[ dist(rng) ];};
+
+    auto length = 500;
+    string s = random_dna(length, randchar);
+
+    return s;
 }

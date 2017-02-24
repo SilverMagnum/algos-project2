@@ -59,7 +59,6 @@ int align(const string &a, const string &b, int alpha_gap,
     return A[n][m];
 }
 
-
 int min(int a, int b, int c) {
     if (a <= b && a <= c) {
         return a;
@@ -71,7 +70,6 @@ int min(int a, int b, int c) {
         return c;
     }
 }
-
 
 void printVector(const vector<vector<int> > &A) {
     for (auto i : A) {
@@ -100,8 +98,16 @@ void getCostTable(int cost[5][5]) {
     while(getline(costfile, line)) {
         if(line_count >= 1 && line_count <=5) {
             removeDelim(line, delim);
-            cout << line << endl;
+            for(int i = 0; i <= 5; i++) {
+                if(line.at(i) != '-' && line.at(i) != 'A' && line.at(i) != 'C' &&
+                        line.at(i) != 'G' && line.at(i) != 'T') {
+                    char c = line.at(i);
+                    int j = c - 48;
+                    cost[line_count - 1][i - 1] = j;
+                }
+            }
         }
         line_count++;
     }
+    costfile.close();
 }
