@@ -2,163 +2,192 @@
 #include <string>
 #include <vector>
 
-#include "otherfuncs.h"
+//#include "otherfuncs.h"
 
 using namespace std;
 
-//const size_t alphabets = 26;
-
-///*
-// * Returns the Needleman-Wunsch score for the best alignment of a and b
-// * and stores the aligned sequences in a_aligned and b_aligned
-// */
-//int align(const string &a, const string &b, int alpha_gap,
-//        int alpha[alphabets][alphabets], string &a_aligned,
-//        string &b_aligned);
-
-//void print2DVector(const vector<vector<int> > &A);
-
-//int min(int a, int b, int c);
+int* stringToIntArray(string dna);
+string intArrayToString(int* digitDNA);
+int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int alpha[5][5], int* outputOne, int* outputTwo);
+int min(int a, int b, int c);
 
 int main() {
-    // The input strings that need to be aligned
-    string a1 = "CGCAATTCTGAAGCGCTGGGGAAGACGGGT";
-    string b1 = "TATCCCATCGAACGCCTATTCTAGGAT";
+    int arr[5][5] = {   //	 -  A  T  G  C
+                            {0, 1, 2, 1, 3},//-
+                            {1, 0, 1, 5, 1},//A
+                            {2, 1, 0, 9, 1},//T
+                            {1, 5, 9, 0, 1},//G
+                            {3, 1, 1, 1, 0}	//C
+                    };
+    string a1 = "AACAGTTACC", b1 = "TAAGGTCA", a2, b2;
+	int *dnaOne, *dnaTwo;
+	int *pairOne, *pairTwo;
+	int pairSize = (a1.size() + b1.size());
+	int weight;
 
-    // Penalty for any alphabet matched with a gap
-    int gap_penalty = 1;
+	pairOne = new int[pairSize];
+	pairTwo = new int[pairSize];
 
-//    int alpha[4][4] = {
-//            {0, 1, 5, 1},
-//            {1, 0, 9, 1},
-//            {5, 9, 0, 1},
-//            {1, 1, 1, 0}
-//        };
+	for(int i = 0; i < pairSize; i++) {
+        pairOne[i] = 9;
+        pairTwo[i] = 9;
+	}
 
-    /*
-     * alpha[i][j] = penalty for matching the ith alphabet with the
-     *               jth alphabet.
-     * Here: Penalty for matching an alphabet with anoter one is 1
-     *       Penalty for matching an alphabet with itself is 0
-     */
-    int alpha[alphabets][alphabets];
-    for (size_t i = 0; i < alphabets; ++i)
-    {
-        for (size_t j = 0; j < alphabets; ++j)
-        {
-            if (i == j) alpha[i][j] = 0;
-            else alpha[i][j] = 2;
-        }
-    }
+    //cout << "Data has been initialized." << endl;
+
+	dnaOne = stringToIntArray(a1);
+	dnaTwo = stringToIntArray(b1);
+
+    //cout << "Int arrays have been created." << endl;
+
+	weight = align(dnaOne, dnaTwo, a1.size(), b1.size(), arr, pairOne, pairTwo);
+
+    //cout << "Align has run successfully." << endl;
+
+    a2 = intArrayToString(pairOne);
+    b2 = intArrayToString(pairTwo);
+
+    cout << "1st String: " << a2 << endl;
+    cout << "2nd String: " << b2 << endl;
+    cout << "Current weight is: " << weight << endl;
 
     // Aligned sequences
-    string a2, b2;
-    int penalty = align(a1, b1, gap_penalty, alpha, a2, b2);
-
-    cout << "a: " << a1 << endl;
-    cout << "b: " << b1 << endl;
-    cout << "Needleman-Wunsch Score: " << penalty << endl;
-    cout << "Aligned sequences: " << endl;
-    cout << a2 << endl;
-    cout << b2 << endl;
-
+    //string a2, b2;
+    //int penalty = align(a1, b1, arr, a2, b2);
     return 0;
 }
 
+int* stringToIntArray(string dna) {
+    int stringSize = dna.size();
+	int* digitDNA;
 
-//int align(const string &a, const string &b, int alpha_gap,
-//        int alpha[alphabets][alphabets], string &a_aligned,
-//        string &b_aligned)
-//{
-//    size_t n = a.size();
-//    size_t m = b.size();
+	digitDNA = new int[stringSize];
 
-//    vector<vector<int> > A(n + 1, vector<int>(m + 1));
+	for(int i = 0; i < stringSize; ++i) {
+		if(dna[i] == 'A') {
+			digitDNA[i] = 1;
+		}
 
-//    for (size_t i = 0; i <= m; ++i)
-//        A[0][i] = alpha_gap * i;
-//    for (size_t i = 0; i <= n; ++i)
-//        A[i][0] = alpha_gap * i;
+		else if(dna[i] == 'T') {
+			digitDNA[i] = 2;
+		}
 
-//    for (size_t i = 1; i <= n; ++i)
-//    {
-//        for (size_t j = 1; j <= m; ++j)
-//        {
-//            char x_i = a[i-1];
-//            char y_j = b[j-1];
-//            A[i][j] = min(A[i-1][j-1] + alpha[x_i - 'A'][y_j - 'A'],
-//                          A[i-1][j] + alpha_gap,
-//                          A[i][j-1] + alpha_gap);
-//        }
-//    }
+		else if(dna[i] == 'G') {
+			digitDNA[i] = 3;
+		}
 
-//    // print2DVector(A);
+		else if(dna[i] == 'C') {
+			digitDNA[i] = 4;
+		}
+	}
 
-//    a_aligned = "";
-//    b_aligned = "";
-//    size_t j = m;
-//    size_t i = n;
-//    for (; i >= 1 && j >= 1; --i)
-//    {
-//        char x_i = a[i-1];
-//        char y_j = b[j-1];
-//        if (A[i][j] == A[i-1][j-1] + alpha[x_i - 'A'][y_j - 'A'])
-//        {
-//            /*
-//             * I think prepending chars this way to a std::string is very inefficient.
-//             * Is there any better way of doing this without using C-style strings?
-//             */
-//            a_aligned = x_i + a_aligned;
-//            b_aligned = y_j + b_aligned;
-//            --j;
-//        }
-//        else if (A[i][j] == A[i-1][j] + alpha_gap)
-//        {
-//            a_aligned = x_i + a_aligned;
-//            b_aligned = '-' + b_aligned;
-//        }
-//        else
-//        {
-//            a_aligned = '-' + a_aligned;
-//            b_aligned = y_j + b_aligned;
-//            --j;
-//        }
-//    }
+	return digitDNA;
+}
 
-//    while (i >= 1 && j < 1)
-//    {
-//        a_aligned = a[i-1] + a_aligned;
-//        b_aligned = '-' + b_aligned;
-//        --i;
-//    }
-//    while (j >= 1 && i < 1)
-//    {
-//        a_aligned = '-' + a_aligned;
-//        b_aligned = b[j-1] + b_aligned;
-//        --j;
-//    }
+string intArrayToString(int* digitDNA) {
+    string dna;
+    for(int i = 0; digitDNA[i] != 9; i++) {
+        if(digitDNA[i] == 0) {
+            dna = dna + '-';
+        }
+        else if(digitDNA[i] == 1) {
+            dna = dna + 'A';
+        }
+        else if(digitDNA[i] == 2) {
+            dna = dna + 'T';
+        }
+        else if(digitDNA[i] == 3) {
+            dna = dna + 'G';
+        }
+        else if(digitDNA[i] == 4) {
+            dna = dna + 'C';
+        }
+    }
 
-//    return A[n][m];
-//}
+    return dna;
+}
 
+int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int alpha[5][5], int* outputOne, int* outputTwo) {
+    //cout << "We've made it inside the align function!" << endl;
+    int n = inputOneSize;
+    int m = inputTwoSize;
 
-//int min(int a, int b, int c)
-//{
-//    if (a <= b && a <= c)
-//        return a;
-//    else if (b <= a && b <= c)
-//        return b;
-//    else
-//        return c;
-//}
+    vector<vector<int> > contour(n + 1, vector<int>(m + 1));
+    //int stringSize = dna.size();
+	//int* digitDNA;
 
+	//digitDNA = new int[stringSize];
 
-//void print2DVector(const vector<vector<int> > &A)
-//{
-//    for (auto i : A)
-//    {
-//        for (auto j : i)
-//            cout << j << " ";
-//        cout << endl;
-//    }
-//}
+    //cout << "Contour vector was made successfully." << endl;
+
+    for (int i = 0; i <= m; i++) {
+        contour[0][i] = 3 * i;
+    }
+
+    for (int i = 0; i <= n; i++) {
+        contour[i][0] = 3 * i;
+    }
+
+    //cout << "Contour was given some values here..." << endl;
+
+    //cout << "M: " << m << " | N: " << n << endl;
+    for(int i = 1; i <= n; i++) {
+		for(int j = 1; j <= m; j++) {
+			//cout << "Loop is about to run for the " << (i*j) << "th time" << endl;
+			contour[i][j] = min(	contour[i-1][j-1] + alpha[inputOne[i-1]][inputTwo[j-1]],
+                                    contour[i-1][j] + alpha[inputOne[i-1]][0],
+                                    contour[i][j-1] + alpha[0][inputTwo[j-1]]);
+            //cout << "Loop has run " << (i*j) << " times." << endl;
+		}
+	}
+
+	//cout << "Contour was initialized successfully!" << endl;
+
+    int j = m;
+    int i = n;
+    int x = 0;
+    int y = 0;
+    for (; i >= 1 && j >= 1; --i) {
+        if (contour[i-1][j-1] + alpha[inputOne[i-1]][inputTwo[j-1]])  {
+            outputOne[x] = inputOne[i-1];
+            outputTwo[y] = inputTwo[j-1];
+            --j; x++; y++;
+        }
+        else if (contour[i-1][j] + alpha[0][inputTwo[j-1]]) {
+            outputOne[x] = inputOne[i-1];
+            outputTwo[y] = 0;
+            x++; y++;
+        }
+        else {
+            outputOne[x] = 0;
+            outputTwo[y] = inputTwo[j-1];
+            --j;
+        }
+    }
+
+    while (i >= 1 && j < 1) {
+        outputOne[x] = inputOne[i-1];
+        outputTwo[y] = 0;
+        --i; x++; y++;
+    }
+    while (j >= 1 && i < 1) {
+        outputOne[x] = 0;
+        outputTwo[y] = inputTwo[j-1];
+        --j; x++; y++;
+    }
+
+    return contour[n][m];
+}
+
+int min(int a, int b, int c) {
+    //cout << "Min has been run." << endl;
+    if (a <= b && a <= c) {
+        return a;
+    }
+    else if (b <= a && b <= c) {
+        return b;
+    }
+    else {
+        return c;
+    }
+}
