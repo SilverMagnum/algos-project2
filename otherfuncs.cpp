@@ -59,7 +59,6 @@ int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int 
     contour[0][0] = 0;
 
     for (int i = 1; i <= m; i++) {
-        //contour[0][i] = 3 * i;
         contour[0][i] = contour[0][i-1] + alpha[0][inputTwo[i-1]];
     }
 
@@ -74,48 +73,42 @@ int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int 
                     contour[i][j-1] + alpha[0][inputTwo[j-1]]);
         }
     }
-
+	
     int j = m;
     int i = n;
     int x = 0;
     int y = 0;
     int weightRecalc = 0;
     for (; i >= 1 && j >= 1; --i) {
-        if (contour[i-1][j-1] + alpha[inputOne[i-1]][inputTwo[j-1]])  {
+        if (contour[i][j] == (contour[i-1][j-1] + alpha[inputOne[i-1]][inputTwo[j-1]])) {
             outputOne[x] = inputOne[i-1];
             outputTwo[y] = inputTwo[j-1];
-            weightRecalc = weightRecalc + alpha[inputOne[i-1]][inputTwo[j-1]];
             --j; x++; y++;
         }
-        else if (contour[i-1][j] + alpha[0][inputTwo[j-1]]) {
+        else if (contour[i][j] == (contour[i-1][j] + alpha[inputOne[i-1]][0])) {
             outputOne[x] = inputOne[i-1];
             outputTwo[y] = 0;
-            weightRecalc = weightRecalc + alpha[0][inputTwo[j-1]];
             x++; y++;
         }
-        else {
+        else if (contour[i][j] == (contour[i][j-1] + alpha[0][inputTwo[j-1]])) {
             outputOne[x] = 0;
             outputTwo[y] = inputTwo[j-1];
-            weightRecalc = weightRecalc + alpha[inputOne[i-1]][0];
-            --j;
+            --j; x++; y++; i++;
         }
     }
 
     while (i >= 1 && j < 1) {
-        outputOne[x] = inputOne[i-1];
+	    outputOne[x] = inputOne[i-1];
         outputTwo[y] = 0;
-        weightRecalc = weightRecalc + alpha[inputOne[i-1]][0];
         --i; x++; y++;
     }
     while (j >= 1 && i < 1) {
-        outputOne[x] = 0;
+	    outputOne[x] = 0;
         outputTwo[y] = inputTwo[j-1];
-        weightRecalc = weightRecalc + alpha[0][inputTwo[j-1]];
         --j; x++; y++;
     }
 
-    return contour[n][m];
-    //return weightRecalc;
+	return contour[n][m];
 }
 
 int min(int a, int b, int c) {
