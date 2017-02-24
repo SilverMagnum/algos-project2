@@ -74,6 +74,10 @@ int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int 
                     contour[i][j-1] + alpha[0][inputTwo[j-1]]);
         }
     }
+	
+	//printVector(contour);
+	//cout << "----------------------------------------------------" << endl;
+	//cout << "Reconstruction path is: ";
 
     int j = m;
     int i = n;
@@ -81,40 +85,45 @@ int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int 
     int y = 0;
     int weightRecalc = 0;
     for (; i >= 1 && j >= 1; --i) {
-        if (contour[i-1][j-1] + alpha[inputOne[i-1]][inputTwo[j-1]])  {
-            outputOne[x] = inputOne[i-1];
+        if (contour[i][j] == (contour[i-1][j-1] + alpha[inputOne[i-1]][inputTwo[j-1]]))  {
+            //cout << "x";
+			outputOne[x] = inputOne[i-1];
             outputTwo[y] = inputTwo[j-1];
-            weightRecalc = weightRecalc + alpha[inputOne[i-1]][inputTwo[j-1]];
+            //weightRecalc = weightRecalc + alpha[inputOne[i-1]][inputTwo[j-1]];
             --j; x++; y++;
         }
-        else if (contour[i-1][j] + alpha[0][inputTwo[j-1]]) {
-            outputOne[x] = inputOne[i-1];
+        else if (contour[i][j] == (contour[i-1][j] + alpha[0][inputTwo[j-1]])) {
+            //cout << "y";
+			outputOne[x] = inputOne[i-1];
             outputTwo[y] = 0;
-            weightRecalc = weightRecalc + alpha[0][inputTwo[j-1]];
+            //weightRecalc = weightRecalc + alpha[0][inputTwo[j-1]];
             x++; y++;
         }
-        else {
-            outputOne[x] = 0;
+        else if (contour[i][j] == (contour[i][j-1] + alpha[0][inputTwo[j-1]])){
+            //cout << "z";
+			outputOne[x] = 0;
             outputTwo[y] = inputTwo[j-1];
-            weightRecalc = weightRecalc + alpha[inputOne[i-1]][0];
-            --j;
+            //weightRecalc = weightRecalc + alpha[inputOne[i-1]][0];
+            --j; x++; y++; i++;
         }
     }
 
     while (i >= 1 && j < 1) {
+		//cout << "1";
         outputOne[x] = inputOne[i-1];
         outputTwo[y] = 0;
-        weightRecalc = weightRecalc + alpha[inputOne[i-1]][0];
+        //weightRecalc = weightRecalc + alpha[inputOne[i-1]][0];
         --i; x++; y++;
     }
     while (j >= 1 && i < 1) {
+		//cout << "2";
         outputOne[x] = 0;
         outputTwo[y] = inputTwo[j-1];
-        weightRecalc = weightRecalc + alpha[0][inputTwo[j-1]];
+        //weightRecalc = weightRecalc + alpha[0][inputTwo[j-1]];
         --j; x++; y++;
     }
 
-    return contour[n][m];
+	return contour[n][m];
     //return weightRecalc;
 }
 
