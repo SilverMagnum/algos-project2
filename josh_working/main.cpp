@@ -18,39 +18,42 @@ string returnDNA();
 
 int main() {
     int cost[5][5] = {{0}};
-    getCostTable(cost);
+    getCostTable(cost); //Opens cost matrix file and stores values into a 2d int array
 
-    // The input strings that need to be aligned
-    string a1 = "AACAGTTACC";
-    string b1 = "TAAGGTCA";
-
-    // Penalty for any alphabet matched with a gap
-    int gap_penalty = 1;
-
-    /*
-     * alpha[i][j] = penalty for matching the ith alphabet with the
-     *               jth alphabet.
-     * Here: Penalty for matching an alphabet with anoter one is 1
-     *       Penalty for matching an alphabet with itself is 0
-     */
-    int alpha[alphabets][alphabets] = {{0}};
-    for (size_t i = 0; i < alphabets; ++i) {
-        for (size_t j = 0; j < alphabets; ++j) {
-            if (i == j) alpha[i][j] = 0;
-            else alpha[i][j] = 2;
-
-        }
+    //Opening the dna input file and createing the output file. Includes checks for file existence
+    ifstream indna;
+    ofstream outdna;
+    indna.open("imp2input.txt");
+    outdna.open("imp2output.txt");
+    if(!indna.is_open()) {
+        cout << "File imp2input.txt does not exist" << endl;
+    }
+    if(!outdna.is_open()) {
+        cout << "Unable to create file imp2output.txt" << endl;
     }
 
-    string a2, b2;
-    int penalty = align(a1, b1, gap_penalty, alpha, a2, b2);
+    string line;
+    while(getline(indna, line)) {
+        string a1 = line.substr(0, line.find(','));
+        string b1 = line.substr(line.find(',') + 1, line.length());
 
-    cout << "a: " << a1 << endl;
-    cout << "b: " << b1 << endl;
-    cout << "Alignment Cost: " << penalty << endl;
-    cout << "Aligned sequences: " << endl;
-    cout << a2 << endl;
-    cout << b2 << endl;
+        int gap_penalty = 1;
+
+        int alpha[alphabets][alphabets] = {{0}};
+        for (size_t i = 0; i < alphabets; ++i) {
+            for (size_t j = 0; j < alphabets; ++j) {
+                if (i == j) alpha[i][j] = 0;
+                else alpha[i][j] = 2;
+            }
+        }
+        string a2, b2;
+        int penalty = align(a1, b1, gap_penalty, alpha, a2, b2);
+
+        outdna << a2 << ',' << b2 << ':' << penalty << endl;
+    }
+    cout << "The \"imp2output.txt\" file has been created in the current directory." << endl;
+    indna.close();
+    outdna.close();
 
     return 0;
 }
