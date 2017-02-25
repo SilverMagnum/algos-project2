@@ -37,7 +37,9 @@ int main() {
         //Initialize variables
         string a1 = line.substr(0, line.find(','));
         string b1 = line.substr(line.find(',') + 1, line.length());
-        string a2, b2;
+        //string a1 = "GTTACTTGACAGGTCCCCCCG";
+		//string b1 = "ACCATCCATGAACTTGCGACCCTC";
+		string a2, b2;
         int *dnaOne, *dnaTwo;
         int *pairOne, *pairTwo;
         int pairSize = (a1.size() + b1.size());

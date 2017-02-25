@@ -73,7 +73,7 @@ int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int 
                     contour[i][j-1] + alpha[0][inputTwo[j-1]]);
         }
     }
-	
+
     int j = m;
     int i = n;
     int x = 0;
@@ -93,7 +93,7 @@ int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int 
         else if (contour[i][j] == (contour[i][j-1] + alpha[0][inputTwo[j-1]])) {
             outputOne[x] = 0;
             outputTwo[y] = inputTwo[j-1];
-            --j; x++; y++; i++;
+		    --j; x++; y++; i++;
         }
     }
 
@@ -105,7 +105,7 @@ int align(int* inputOne, int* inputTwo, int inputOneSize, int inputTwoSize, int 
     while (j >= 1 && i < 1) {
 	    outputOne[x] = 0;
         outputTwo[y] = inputTwo[j-1];
-        --j; x++; y++;
+        --i; x++; y++;
     }
 
 	return contour[n][m];
